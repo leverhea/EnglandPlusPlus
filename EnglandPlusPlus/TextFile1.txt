@@ -1,0 +1,223 @@
+-- EnglandPlusPlus
+-- Author: leverhea
+-- DateCreated: 11/17/2024 5:24:07 PM
+--------------------------------------------------------------
+
+-- Create the unit buff ABILITY
+INSERT or IGNORE INTO Types (Type, Kind)
+VALUES(
+        'ABILITY_VICTORIA_NAVAL_UNITS'
+    ,   'KIND_ABILITY'
+);
+
+-- Ensure unit buff ABILITY attaches to correct unit type
+INSERT or IGNORE INTO TypeTags (Type, Tag)
+VALUES(
+        'ABILITY_VICTORIA_NAVAL_UNITS'
+    ,   'CLASS_NAVAL_RANGED'
+);
+
+
+INSERT or IGNORE INTO Modifiers (ModifierId, ModifierType)
+VALUES(
+        -- Responsible for creating the unit when districts / buildings are created and attaching an ability to it
+        'TRAIT_VICTORIA_DOCKYARD_FREE_NAVAL_UNIT'
+    ,   'MODIFIER_PLAYER_DISTRICT_ADJUST_PLAYER_DISTRICT_AND_BUILDINGS_CREATE_UNIT_WITH_ABILITY_BY_CLASS_GREAT_NEGOTIATORS'
+)
+,   (
+        -- A MODIFIER similar to the Unit ABILITY created above
+        'VICTORIA_NAVAL_BUFF'
+    ,   'MODIFIER_UNIT_ADJUST_COMBAT_STRENGTH'
+)
+,   (
+        'VICTORIA_RESOURCE_FREE_UNITS'
+    ,   'MODIFIER_PLAYER_UNIT_ADJUST_IGNORE_RESOURCE_MAINTENANCE'
+);
+
+
+INSERT or IGNORE INTO Modifiers
+    (ModifierId, ModifierType, SubjectRequirementSetId)
+VALUES(
+        'TRAIT_VICTORIA_DOCKYARD_FREE_GALLEY'
+    ,   'MODIFIER_PLAYER_DISTRICT_ADJUST_PLAYER_DISTRICT_AND_BUILDINGS_CREATE_UNIT_WITH_ABILITY_BY_CLASS_GREAT_NEGOTIATORS'
+    ,   'REQSET_PLAYER_HAS_ONLY_GALLEY'
+);
+
+
+INSERT or IGNORE INTO RequirementSets
+    (ModifierId, ModifierType)
+VALUES
+    ('REQSET_PLAYER_HAS_ONLY_GALLEY', 'REQUIREMENTSET_TEST_ALL')
+;
+
+
+
+
+
+
+
+
+
+INSERT or IGNORE INTO TraitModifiers (TraitType, ModifierId)
+VALUES(
+        -- attaches the unit generating modifier to the leader trait
+        'TRAIT_LEADER_PAX_BRITANNICA'
+    ,   'TRAIT_VICTORIA_DOCKYARD_FREE_NAVAL_UNIT'
+);
+
+
+INSERT or IGNORE INTO ModifierArguments (ModifierId, Name, Value)
+VALUES(
+        -- Think of this like calling a function: MODIFIER_PLAYER_DISTRICT_ADJUST_PLAYER_DISTRICT_AND_BUILDINGS_CREATE_UNIT_WITH_ABILITY_BY_CLASS_GREAT_NEGOTIATORS
+        -- This function accepts three arguments
+        --      DistrictType: what distrit it should monitor for new construction (including buildings)
+        --      UnitPromotionClass: what type of unit should be created
+        --      UnitAbilityType: what type of unit ability should this new unit have
+        'TRAIT_VICTORIA_DOCKYARD_FREE_NAVAL_UNIT'
+    ,   'DistrictType'
+    ,   'DISTRICT_ROYAL_NAVY_DOCKYARD'
+)
+,   (
+        'TRAIT_VICTORIA_DOCKYARD_FREE_NAVAL_UNIT'
+    ,   'UnitPromotionClass'
+    ,   'PROMOTION_CLASS_NAVAL_RANGED'
+)
+,   (
+        'TRAIT_VICTORIA_DOCKYARD_FREE_NAVAL_UNIT'
+    ,   'UnitAbilityType'
+    ,   'ABILITY_VICTORIA_NAVAL_UNITS'
+)
+,   (
+        'VICTORIA_RESOURCE_FREE_UNITS'
+    ,   'Ignore'
+    ,   '1'
+)
+,   (
+        -- governs the amount of the buff modifier which is attached above
+        'VICTORIA_NAVAL_BUFF'
+    ,   'Amount'
+    ,   '5'
+);
+
+
+INSERT or IGNORE INTO UnitAbilities (UnitAbilityType, Name, Description, Inactive)
+VALUES
+    -- the same unit ability as referenced in the Types and TypesTags tables
+    ('ABILITY_VICTORIA_NAVAL_UNITS', 'LOC_TRAIT_LEADER_PAX_BRITANNICA_NAME', 'LOC_TRAIT_LEADER_LINCOLN_EXPANSION_DESCRIPTION', '1')
+;
+
+
+INSERT or IGNORE INTO UnitAbilityModifiers (UnitAbilityType, ModifierId)
+VALUES
+    -- This is what connects the Unit Ability ABILITY_VICTORIA_NAVAL_UNITS to the Modifier VICTORIA_NAVAL_BUFF
+        ('ABILITY_VICTORIA_NAVAL_UNITS', 'VICTORIA_NAVAL_BUFF')
+    ,   ('ABILITY_VICTORIA_NAVAL_UNITS', 'VICTORIA_RESOURCE_FREE_UNITS')
+;
+
+
+
+
+
+
+/*
+if      yes lasers => missile cruiser
+
+
+if      not lasers
+    and yes telecommunications => nuclear submarine
+
+
+if      not lasers
+    and not telecommunications
+    and yes combined arms => destroyer
+
+
+if      not lasers
+    and not telecommunications
+    and yes combined arms => destroyer
+
+
+if      not lasers
+    and not telecommunications
+    and not combined arms
+    and yes electricity => submarine
+
+
+if      not lasers
+    and not telecommunications
+    and not combined arms
+    and not electricity
+    and yes refining => battleship
+
+
+if      not lasers
+    and not telecommunications
+    and not combined arms
+    and not electricity
+    and not refining
+    and yes steam power => ironclad
+
+
+if      not lasers
+    and not telecommunications
+    and not combined arms
+    and not electricity
+    and not refining
+    and not steam power
+    and yes mercantilism => sea dog
+
+
+if      not lasers
+    and not telecommunications
+    and not combined arms
+    and not electricity
+    and not refining
+    and not steam power
+    and not mercantilism
+    and yes square rigging => frigate
+
+
+if      not lasers
+    and not telecommunications
+    and not combined arms
+    and not electricity
+    and not refining
+    and not steam power
+    and not square rigging
+    and not mercantilism
+    and yes cartography => caravel
+
+
+if      not lasers
+    and not telecommunications
+    and not combined arms
+    and not electricity
+    and not refining
+    and not steam power
+    and not square rigging
+    and not cartography
+    and not mercantilism
+    and yes shipbuilding => quadrireme
+
+
+if      not lasers
+    and not telecommunications
+    and not combined arms
+    and not electricity
+    and not refining
+    and not steam power
+    and not square rigging
+    and not cartography
+    and not mercantilism
+    and not shipbuilding => galley
+
+*/
+
+
+
+
+
+
+
+
+
